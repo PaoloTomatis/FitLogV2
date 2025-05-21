@@ -1,0 +1,106 @@
+body,
+html {
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    line-height: 1;
+    font-size: 16px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+    margin: 0 0 0 0;
+    padding: 0;
+}
+img {
+    height: auto;
+}
+h1 {
+    font-size: 4rem;
+}
+h2 {
+    font-size: 3rem;
+}
+h3 {
+    font-size: 2rem;
+}
+h4 {
+    font-size: 1rem;
+}
+h5 {
+    font-size: 0.8rem;
+}
+h6 {
+    font-size: 0.6rem;
+}
+a {
+    text-decoration: none;
+}
+
+:root {
+    --primary: #007bff;
+    --primary-light: #339eff;
+    --primary-hover: #28a745;
+    --secondary: #9ba7b1;
+    --background-color: #f8f9fa;
+    --ui-element: #dee2e6;
+    --primary-txt: #212529;
+    --secondary-txt: #495057;
+    --text-light: #f5f5f5;
+    --success: #198754;
+    --error: #dc3545;
+    --transition: all 0.3s ease;
+    --accent: #00d4ff;
+    --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    --hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+/* Smartphone medi (481px - 767px)
+@media (min-width: 481px) and (max-width: 767px) {
+    main{
+        background-color: green;
+    }
+}
+
+Tablet verticali (768px - 1024px)
+@media (min-width: 768px) and (max-width: 1024px) {
+    main{
+        background-color: blue;
+    }
+}
+
+Laptop e desktop piccoli (1025px - 1440px)
+@media (min-width: 1025px) and (max-width: 1440px) {
+    main{
+        background-color: yellow;
+    }
+}
+
+Desktop grandi (oltre 1440px)
+@media (min-width: 1441px) {
+    main{
+        background-color: white;
+    }
+} */
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+}

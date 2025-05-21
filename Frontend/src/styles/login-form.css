@@ -1,0 +1,71 @@
+.login-form {
+    margin: 15vh 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+}
+
+.txt-input {
+    width: 100%;
+    border: 1px solid var(--ui-element);
+    border-radius: 6px;
+    background-color: var(--secondary);
+    color: #fff;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    padding: 0.6rem 0.8rem;
+    transition: var(--transition);
+    cursor: text;
+}
+
+.txt-input::placeholder {
+    color: var(--secondary-txt);
+    opacity: 1;
+}
+
+.txt-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 130, 0, 0.3);
+}
+
+.submit-btn {
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    background-color: var(--primary);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.submit-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.submit-btn:active {
+    transform: scale(0.97);
+}
+
+.form-tit {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-txt);
+}
+
+.form-txt {
+    color: var(--secondary-txt);
+    font-size: 0.9rem;
+    text-align: center;
+    line-height: 1.4;
+}
