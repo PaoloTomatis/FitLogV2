@@ -21,7 +21,7 @@ const getExercises = async (req, res) => {
             ])) || [];
 
         // Per ogni esercizio controllo che l'id dello user corrisponda
-        const check = !exercises.every((w) => w.userId == id || w.userId == 0);
+        const check = exercises.every((w) => w.userId == id || w.userId == 0);
 
         if (check) {
             // Risposta con dati richiesti
@@ -102,7 +102,7 @@ const putExercise = async (req, res) => {
         }
 
         // Controllo dati ricevuti
-        if (values.length === 0) {
+        if (values.length === 0 || !identificative || !field) {
             return res.status(400).json({
                 success: false,
                 message: 'Dati mancanti!',
@@ -112,11 +112,12 @@ const putExercise = async (req, res) => {
         values.push(field);
         values.splice(updates.length - 1, 0, field);
 
-        // Esecuzione query per ricavare l'esercizio
-        const [exercise] = await pool.query(
-            `SELECT userId FROM exercises WHERE ?? = ?`,
-            [field, identificative]
-        );
+        // Esecuzione query per ricavare lo user id degli esercizi
+        const [exercise] =
+            (await pool.query(`SELECT userId FROM exercises WHERE ?? = ?`, [
+                field,
+                identificative,
+            ])) || [];
 
         // Controllo che gli id dello user corrispondano
         if (exercise[0]?.userId == id) {

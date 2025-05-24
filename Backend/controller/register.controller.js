@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import db from '../database/crud/db.function.js';
+import db from '../database/db.function.js';
 import dotenv from 'dotenv';
 dotenv.config();
 

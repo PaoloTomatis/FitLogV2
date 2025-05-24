@@ -21,7 +21,7 @@ const getExerciseWeights = async (req, res) => {
             ])) || [];
 
         // Per ogni carico pesi controllo che l'id dello user corrisponda
-        const check = !exerciseWeights.every((w) => w.userId == id);
+        const check = exerciseWeights.every((w) => w.userId == id);
 
         if (check) {
             // Risposta con dati richiesti
@@ -108,26 +108,22 @@ const putExerciseWeight = async (req, res) => {
         }
 
         // Controllo dati ricevuti
-        if (values.length === 0) {
+        if (values.length === 0 || !identificative || !field) {
             return res.status(400).json({
                 success: false,
                 message: 'Dati mancanti!',
             });
         }
-        if (!identificative || !field)
-            return res.status(400).json({
-                success: false,
-                message: 'Dati mancanti!',
-            });
 
         values.push(field);
         values.splice(updates.length - 1, 0, field);
 
-        // Esecuzione query per ricavare il carico pesi
-        const [exerciseWeights] = await pool.query(
-            `SELECT userId FROM exerciseWeights WHERE ?? = ?`,
-            [field, identificative]
-        );
+        // Esecuzione query per ricavare lo user id dei carichi pesi
+        const [exerciseWeights] =
+            (await pool.query(
+                `SELECT userId FROM exerciseWeights WHERE ?? = ?`,
+                [field, identificative]
+            )) || [];
 
         // Controllo che gli id dello user corrispondano
         if (exerciseWeights[0]?.userId == id) {
@@ -172,7 +168,7 @@ const deleteExerciseWeight = async (req, res) => {
                 message: 'Dati mancanti!',
             });
 
-        // Esecuzione query per ricavare l'id utente dell'esercizio che si vuole eliminare
+        // Esecuzione query per ricavare l'id utente del carico pesi che si vuole eliminare
         const [exerciseWeight] =
             (await pool.query(
                 'SELECT userId FROM exerciseWeights WHERE ?? = ?',

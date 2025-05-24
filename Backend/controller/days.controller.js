@@ -1,6 +1,6 @@
 import pool from './database.js';
 
-const getWorkoutPresets = async (req, res) => {
+const getDays = async (req, res) => {
     try {
         // Ricevo i dati dalla richiesta
         const { identificative, field } = req.body;
@@ -14,28 +14,24 @@ const getWorkoutPresets = async (req, res) => {
             });
 
         // Richiedo i dati al database
-        const [workoutPresets] =
-            (await pool.query(`SELECT * FROM workoutPresets WHERE ?? = ?`, [
+        const [days] =
+            (await pool.query(`SELECT * FROM days WHERE ?? = ?`, [
                 field,
                 identificative,
             ])) || [];
 
-        // Per ogni preset controllo che l'id dello user corrisponda
-        const check = workoutPresets.every(
-            (w) => w.userId == id || w.userId == 0
-        );
+        // Per ogni giorno controllo che l'id dello user corrisponda
+        const check = days.every((w) => w.userId == id);
 
         if (check) {
             // Risposta con dati richiesti
-            return res
-                .status(200)
-                .json({ success: true, data: workoutPresets });
+            return res.status(200).json({ success: true, data: days });
         } else {
             // Risposta con errore
             return res.status(403).json({
                 success: false,
                 data: [],
-                message: 'Preset privati o non disponibili!',
+                message: 'Giorno privato o non disponibile!',
             });
         }
     } catch (error) {
@@ -48,31 +44,44 @@ const getWorkoutPresets = async (req, res) => {
     }
 };
 
-const postWorkoutPreset = async (req, res) => {
+const postDay = async (req, res) => {
     try {
         // Ricevo dati dalla richiesta
-        // body={ data:{name:"name", description:"description"} }
-        const { name, description } = req.body.data;
+        // body={ data:{notes:"notes", date:"YYYY-MM-DD"} }
+        const { notes, date } = req.body.data;
         const { id } = req.user;
 
         // Controllo i dati ricevuti
-        if (!name || !description)
+        if (!date || !notes)
             return res.status(400).json({
                 success: false,
                 message: 'Dati mancanti!',
             });
 
-        // Effettuo la query di inserimento
-        await pool.query(
-            `INSERT INTO workoutPresets (name, description, userId) VALUES (?, ?, ?)`,
-            [name, description, id]
-        );
+        // Ricavo i giorni con la stessa data
+        const [days] =
+            (await pool.query(`SELECT * FROM days WHERE date = ?`, [date])) ||
+            [];
 
-        // Restituisco messaggio di conferma
-        res.status(200).json({
-            success: true,
-            message: 'Preset creato correttamente!',
-        });
+        if (!days) {
+            // Effettuo la query di inserimento
+            await pool.query(
+                `INSERT INTO days (date, notes, userId) VALUES (?, ?, ?)`,
+                [date, notes, id]
+            );
+
+            // Restituisco messaggio di conferma
+            res.status(200).json({
+                success: true,
+                message: 'Giorno aggiunto correttamente!',
+            });
+        } else {
+            // Restituisco messaggio con errore
+            res.status(409).json({
+                success: false,
+                message: 'Giorno già esistente!',
+            });
+        }
     } catch (error) {
         // Restituisco eventuali errori
         console.error(error);
@@ -83,12 +92,12 @@ const postWorkoutPreset = async (req, res) => {
     }
 };
 
-const putWorkoutPreset = async (req, res) => {
+const putDay = async (req, res) => {
     try {
         // Ricevo dati dalla richiesta
-        // body={ where:{identificative:2, field:"id"}, data:{name:"name", description:"description"} }
+        // body={ where:{identificative:2, field:"id"}, data:{date:"YYYY-MM-DD", notes:"notes"} }
         const { identificative, field } = req.body.where;
-        const { name, description } = req.body.data;
+        const { date, notes } = req.body.data;
         const { id } = req.user;
 
         // Inizializzazione liste
@@ -96,13 +105,13 @@ const putWorkoutPreset = async (req, res) => {
         const values = [];
 
         // Logica per inserimento dati nella query
-        if (name) {
-            updates.push('name = ?');
-            values.push(name);
+        if (date) {
+            updates.push('date = ?');
+            values.push(date);
         }
-        if (description) {
-            updates.push('description = ?');
-            values.push(description);
+        if (notes) {
+            updates.push('notes = ?');
+            values.push(notes);
         }
 
         // Controllo dati ricevuti
@@ -116,31 +125,31 @@ const putWorkoutPreset = async (req, res) => {
         values.push(field);
         values.splice(updates.length - 1, 0, field);
 
-        // Esecuzione query per ricavare lo user id dei preset
-        const [workoutPresets] =
-            (await pool.query(
-                `SELECT userId FROM workoutPresets WHERE ?? = ?`,
-                [field, identificative]
-            )) || [];
+        // Esecuzione query per ricavare lo user id dei giorni
+        const [days] =
+            (await pool.query(`SELECT userId FROM days WHERE ?? = ?`, [
+                field,
+                identificative,
+            ])) || [];
 
         // Controllo che gli id dello user corrispondano
-        if (workoutPresets[0]?.userId == id) {
+        if (days[0]?.userId == id) {
             // Esecuzione query di aggiornamento
             await pool.query(
-                `UPDATE workoutPresets SET ${updates.join(', ')} WHERE ?? = ?`,
+                `UPDATE days SET ${updates.join(', ')} WHERE ?? = ?`,
                 values
             );
 
             // Risposta di conferma
             res.status(200).json({
                 success: true,
-                message: 'Preset aggiornato correttamente!',
+                message: 'Giorno aggiornato correttamente!',
             });
         } else {
             // Risposta con errore
             return res.status(403).json({
                 success: false,
-                message: 'Preset privato o non disponibile!',
+                message: 'Giorno privato o non disponibile!',
             });
         }
     } catch (error) {
@@ -153,7 +162,7 @@ const putWorkoutPreset = async (req, res) => {
     }
 };
 
-const deleteWorkoutPreset = async (req, res) => {
+const deleteDay = async (req, res) => {
     try {
         // Ricevo dati dalla richiesta
         const { identificative, field } = req.body;
@@ -166,17 +175,17 @@ const deleteWorkoutPreset = async (req, res) => {
                 message: 'Dati mancanti!',
             });
 
-        // Esecuzione query per ricavare l'id utente del preset che si vuole eliminare
-        const [workoutPresets] =
-            (await pool.query(
-                'SELECT userId FROM workoutPresets WHERE ?? = ?',
-                [field, identificative]
-            )) || [];
+        // Esecuzione query per ricavare l'id utente del giorno che si vuole eliminare
+        const [days] =
+            (await pool.query('SELECT userId FROM days WHERE ?? = ?', [
+                field,
+                identificative,
+            ])) || [];
 
         // Controllo che gli id dello user corrispondano
-        if (workoutPresets[0]?.userId == id) {
+        if (days[0]?.userId == id) {
             // Esecuzione query di eliminazione
-            await pool.query(`DELETE * FROM workoutPresets WHERE ?? = ?`, [
+            await pool.query(`DELETE * FROM days WHERE ?? = ?`, [
                 field,
                 identificative,
             ]);
@@ -184,13 +193,13 @@ const deleteWorkoutPreset = async (req, res) => {
             // Risposta di conferma
             return res.status(200).json({
                 success: true,
-                message: 'Preset eliminato correttamente!',
+                message: 'Giorno eliminato correttamente!',
             });
         } else {
             // Risposta con errore
             return res.status(403).json({
                 success: false,
-                message: 'Preset privato o non disponibile!',
+                message: 'Giorno privato o non disponibile!',
             });
         }
     } catch (error) {
@@ -203,9 +212,4 @@ const deleteWorkoutPreset = async (req, res) => {
     }
 };
 
-export {
-    getWorkoutPresets,
-    postWorkoutPreset,
-    putWorkoutPreset,
-    deleteWorkoutPreset,
-};
+export { getDays, postDay, putDay, deleteDay };

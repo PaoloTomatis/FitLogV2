@@ -21,7 +21,7 @@ const getWeights = async (req, res) => {
             ])) || [];
 
         // Per ogni peso controllo che l'id dello user corrisponda
-        const check = !weights.every((w) => w.userId == id);
+        const check = weights.every((w) => w.userId == id);
 
         if (check) {
             // Risposta con dati richiesti
@@ -95,11 +95,12 @@ const putWeight = async (req, res) => {
             });
         }
 
-        // Esecuzione query per ricavare il peso
-        const [weights] = await pool.query(
-            `SELECT userId FROM weights WHERE ?? = ?`,
-            [field, identificative]
-        );
+        // Esecuzione query per ricavare lo user id dei pesi
+        const [weights] =
+            (await pool.query(`SELECT userId FROM weights WHERE ?? = ?`, [
+                field,
+                identificative,
+            ])) || [];
 
         // Controllo che gli id dello user corrispondano
         if (weights[0]?.userId == id) {
@@ -145,7 +146,7 @@ const deleteWeight = async (req, res) => {
                 message: 'Dati mancanti!',
             });
 
-        // Esecuzione query per ricavare l'id utente dell'esercizio che si vuole eliminare
+        // Esecuzione query per ricavare l'id utente del peso che si vuole eliminare
         const [weights] =
             (await pool.query('SELECT userId FROM weights WHERE ?? = ?', [
                 field,

@@ -21,7 +21,7 @@ const getWorkoutComponents = async (req, res) => {
             ])) || [];
 
         // Per ogni componente controllo che l'id dello user corrisponda
-        const check = !workoutComponents.every(
+        const check = workoutComponents.every(
             (w) => w.userId == id || w.userId == 0
         );
 
@@ -110,26 +110,22 @@ const putWorkoutComponent = async (req, res) => {
         }
 
         // Controllo dati ricevuti
-        if (values.length === 0) {
+        if (values.length === 0 || !identificative || !field) {
             return res.status(400).json({
                 success: false,
                 message: 'Dati mancanti!',
             });
         }
-        if (!identificative || !field)
-            return res.status(400).json({
-                success: false,
-                message: 'Dati mancanti!',
-            });
 
         values.push(field);
         values.splice(updates.length - 1, 0, field);
 
-        // Esecuzione query per ricavare il componente
-        const [workoutComponents] = await pool.query(
-            `SELECT userId FROM workoutComponents WHERE ?? = ?`,
-            [field, identificative]
-        );
+        // Esecuzione query per ricavare lo user id dei componenti
+        const [workoutComponents] =
+            (await pool.query(
+                `SELECT userId FROM workoutComponents WHERE ?? = ?`,
+                [field, identificative]
+            )) || [];
 
         // Controllo che gli id dello user corrispondano
         if (workoutComponents[0]?.userId == id) {
@@ -176,7 +172,7 @@ const deleteWorkoutComponent = async (req, res) => {
                 message: 'Dati mancanti!',
             });
 
-        // Esecuzione query per ricavare l'id utente dell'esercizio che si vuole eliminare
+        // Esecuzione query per ricavare l'id utente del componente che si vuole eliminare
         const [workoutComponents] =
             (await pool.query(
                 'SELECT userId FROM workoutComponents WHERE ?? = ?',
