@@ -1,4 +1,4 @@
-import db from '../database/db.function.js';
+import db from '../database/crud/db.function.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -37,7 +37,7 @@ const logout = async (req, res) => {
         console.error(error);
         res.status(error.status || 500).json({
             success: false,
-            message: error.message || 'Server Internal Error',
+            message: error.message || 'Errore interno del Server',
         });
     }
 };

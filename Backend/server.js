@@ -1,5 +1,6 @@
 import express from 'express';
 import auth from './routes/auth.js';
+import api from './routes/api.js';
 import verifyJWT from './middleware/verifyJWT.js';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
@@ -15,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/auth', auth);
-app.get('/api', verifyJWT, (req, res) => res.send('CIAO'));
+app.get('/api', verifyJWT, api);
 
 app.use((req, res) => {
     res.status(404).json({ success: false, message: 'Pagina non trovata!' });
