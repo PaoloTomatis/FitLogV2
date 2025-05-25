@@ -4,7 +4,7 @@ import {
     getWorkoutSessions,
     postWorkoutSession,
     putWorkoutSession,
-} from '../../controller/workoutSessions.controller';
+} from '../../controller/workoutSessions.controller.js';
 const router = Router();
 
 router

@@ -4,7 +4,7 @@ import {
     getExerciseWeights,
     postExerciseWeight,
     putExerciseWeight,
-} from '../../controller/exerciseWeights.controller';
+} from '../../controller/exerciseWeights.controller.js';
 const router = Router();
 
 router

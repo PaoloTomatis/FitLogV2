@@ -4,7 +4,7 @@ import {
     getWorkoutPresets,
     postWorkoutPreset,
     putWorkoutPreset,
-} from '../../controller/workoutPresets.controller';
+} from '../../controller/workoutPresets.controller.js';
 const router = Router();
 
 router

@@ -4,7 +4,7 @@ import {
     getExercises,
     postExercise,
     putExercise,
-} from '../../controller/exercises.controller';
+} from '../../controller/exercises.controller.js';
 const router = Router();
 
 router

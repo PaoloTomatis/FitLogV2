@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/auth', auth);
-app.get('/api', verifyJWT, api);
+app.use('/api', verifyJWT, api);
 
 app.use((req, res) => {
     res.status(404).json({ success: false, message: 'Pagina non trovata!' });

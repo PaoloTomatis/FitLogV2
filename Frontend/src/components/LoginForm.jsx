@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/login-form.css';
 import { useAuth } from '../utils/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm(props) {
     const [type, setType] = useState(props.type || 'signup');
@@ -10,6 +11,7 @@ function LoginForm(props) {
         password: '',
         identificative: '',
     });
+    const navigate = useNavigate();
 
     const welcomeTxt = type === 'login' ? 'Ben Ritornato!' : 'Benvenuto!';
 
@@ -18,13 +20,22 @@ function LoginForm(props) {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await login(formData.identificative, formData.password);
+            console.log([formData.identificative, formData.password]);
+
+            const result = await login(
+                formData.identificative,
+                formData.password
+            );
             setFormData({
                 username: '',
                 email: '',
                 password: '',
                 identificative: '',
             });
+
+            if (result) {
+                navigate('/dashboard');
+            }
         } catch (error) {
             console.error(error.message);
         }
@@ -33,13 +44,21 @@ function LoginForm(props) {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            await register(formData.username, formData.email, formData.psw);
+            console.log([formData.identificative, formData.password]);
+            const result = await register(
+                formData.username,
+                formData.email,
+                formData.password
+            );
             setFormData({
                 username: '',
                 email: '',
                 password: '',
                 identificative: '',
             });
+            if (result) {
+                navigate('/dashboard');
+            }
         } catch (error) {
             console.error(error.message);
         }

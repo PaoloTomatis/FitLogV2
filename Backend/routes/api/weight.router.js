@@ -4,7 +4,7 @@ import {
     getWeights,
     postWeight,
     putWeight,
-} from '../../controller/weight.controller';
+} from '../../controller/weight.controller.js';
 const router = Router();
 
 router

@@ -1,9 +1,9 @@
-import pool from './database.js';
+import pool from '../database/database.js';
 
 const getExercises = async (req, res) => {
     try {
         // Ricevo i dati dalla richiesta
-        const { identificative, field } = req.body;
+        const { identificative, field } = req.query;
         const { id } = req.user;
 
         // Check dei dati

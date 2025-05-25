@@ -26,38 +26,41 @@ export function AuthProvider({ children }) {
                     psw: psw,
                 }),
             });
-            const result1 = await call.json();
-            if (!call1.ok) throw new Error(result1.message);
+            const result1 = await call1.json();
+            if (!call1.ok && call1.success !== true)
+                throw new Error(result1.message);
 
-            //! MANCA L'INVIO DEL TOKEN
-            //! MANCA L'API
             const call2 = await fetch(
-                `http://localhost:3000/api/user/${identificative}`,
+                `http://localhost:3000/api/user?identificative=${encodeURIComponent(
+                    identificative
+                )}`,
                 {
-                    method: 'post',
+                    method: 'get',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${result1.data}`,
                     },
-                    body: JSON.stringify({
-                        identificative: identificative,
-                        psw: psw,
-                    }),
                 }
             );
             const result2 = await call2.json();
-            if (!call2.ok) throw new Error(result2.message);
+            if (!call2.ok && call2.success !== true)
+                throw new Error(result2.message);
 
             setLogged(true);
             setToken(result1.data);
             setUser(result2.data);
             localStorage.setItem('logged', 'true');
+            return { success: true };
         } catch (error) {
             console.error(error.message);
+            return { success: false, message: error.message };
         }
     };
 
     const register = async (username, email, psw) => {
         try {
+            console.log([username, email, psw]);
+
             const call = await fetch('http://localhost:3000/auth/register', {
                 method: 'post',
                 headers: {
@@ -71,8 +74,11 @@ export function AuthProvider({ children }) {
             });
             const result = await call.json();
             if (!call.ok) throw new Error(result.message);
+
+            return { success: true };
         } catch (error) {
             console.error(error.message);
+            return { success: false, message: error.message };
         }
     };
 

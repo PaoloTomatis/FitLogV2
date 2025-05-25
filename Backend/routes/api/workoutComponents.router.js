@@ -4,7 +4,7 @@ import {
     getWorkoutComponents,
     postWorkoutComponent,
     putWorkoutComponent,
-} from '../../controller/workoutComponents.controller';
+} from '../../controller/workoutComponents.controller.js';
 const router = Router();
 
 router

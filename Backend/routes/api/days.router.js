@@ -4,7 +4,7 @@ import {
     getDays,
     postDay,
     putDay,
-} from '../../controller/days.controller';
+} from '../../controller/days.controller.js';
 const router = Router();
 
 router
